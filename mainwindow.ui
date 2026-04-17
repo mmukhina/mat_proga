@@ -6,25 +6,391 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1400</width>
+    <height>900</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Динамическое программирование - Визуализация кратчайшего пути</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>25</height>
-    </rect>
-   </property>
+  <property name="styleSheet">
+   <string notr="true">
+    QMainWindow { background-color: #FFF0F5; }
+    QWidget { background-color: #FFF0F5; }
+    QScrollArea { background-color: #FFF0F5; border: none; }
+    QScrollBar:vertical { border: none; background-color: #FFF0F5; width: 10px; border-radius: 5px; }
+    QScrollBar::handle:vertical { background-color: #FF69B4; border-radius: 5px; min-height: 20px; }
+    QScrollBar::handle:vertical:hover { background-color: #FF1493; }
+    QGroupBox { font-weight: bold; border: 2px solid #FF69B4; border-radius: 8px; margin-top: 10px; padding-top: 10px; background-color: #FFF5F8; color: #8B0045; }
+    QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 5px; color: #FF1493; }
+    QPushButton { background-color: #FF69B4; border: none; border-radius: 6px; padding: 8px; font-weight: bold; color: white; }
+    QPushButton:hover { background-color: #FF1493; }
+    QPushButton:pressed { background-color: #C71585; }
+    QLineEdit { border: 2px solid #FFB6C1; border-radius: 5px; padding: 5px; background-color: white; color: #8B0045; }
+    QLineEdit:focus { border-color: #FF69B4; }
+    QTableWidget { border: 2px solid #FFB6C1; border-radius: 5px; background-color: white; alternate-background-color: #FFF0F5; gridline-color: #FFB6C1; }
+    QTableWidget::item { padding: 5px; }
+    QHeaderView::section { background-color: #FF69B4; color: white; padding: 5px; border: none; font-weight: bold; }
+    QLabel { color: #8B0045; }
+    QLabel#resultLabel { border: 2px solid #FF69B4; border-radius: 8px; padding: 10px; background-color: #FFF0F5; color: #8B0045; }
+    QSplitter::handle { background-color: #FFB6C1; }
+   </string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QScrollArea" name="leftScrollArea">
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>450</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <widget class="QWidget" name="leftPanel">
+        <layout class="QVBoxLayout" name="leftLayout">
+         <item>
+          <widget class="QLabel" name="titleLabel">
+           <property name="text">
+            <string>Поиск кратчайшего пути
+Метод динамического программирования</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="styleSheet">
+            <string>font-size: 16px; font-weight: bold; margin: 10px; color: #FF1493;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="inputGroup">
+           <property name="title">
+            <string>Ввод данных</string>
+           </property>
+           <layout class="QVBoxLayout" name="inputLayout">
+            <item>
+             <layout class="QHBoxLayout" name="fileLayout">
+              <item>
+               <widget class="QPushButton" name="loadFileBtn">
+                <property name="text">
+                 <string>Загрузить из файла</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QGridLayout" name="manualLayout">
+              <item row="0" column="0">
+               <widget class="QLabel" name="fromLabel">
+                <property name="text">
+                 <string>От:</string>
+                </property>
+                <property name="styleSheet">
+                 <string>color: #8B0045; font-weight: bold;</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="fromEdit">
+                <property name="placeholderText">
+                 <string>1</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="toLabel">
+                <property name="text">
+                 <string>До:</string>
+                </property>
+                <property name="styleSheet">
+                 <string>color: #8B0045; font-weight: bold;</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QLineEdit" name="toEdit">
+                <property name="placeholderText">
+                 <string>2</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="4">
+               <widget class="QLabel" name="weightLabel">
+                <property name="text">
+                 <string>Вес:</string>
+                </property>
+                <property name="styleSheet">
+                 <string>color: #8B0045; font-weight: bold;</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="5">
+               <widget class="QLineEdit" name="weightEdit">
+                <property name="placeholderText">
+                 <string>5</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0" colspan="6">
+               <widget class="QPushButton" name="addEdgeBtn">
+                <property name="text">
+                 <string>Добавить ребро</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QPushButton" name="clearBtn">
+              <property name="text">
+               <string>Очистить граф</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="nodeCountLabel">
+              <property name="text">
+               <string>Узлов: 0</string>
+              </property>
+              <property name="styleSheet">
+               <string>color: #FF1493; font-weight: bold; font-size: 12px;</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="edgesGroup">
+           <property name="title">
+            <string>Список ребер</string>
+           </property>
+           <layout class="QVBoxLayout" name="edgesLayout">
+            <item>
+             <widget class="QTableWidget" name="edgesTable">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>150</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>250</height>
+               </size>
+              </property>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <attribute name="alternatingRowColors">
+               <bool>true</bool>
+              </attribute>
+              <column>
+               <property name="text">
+                <string>От</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>До</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Вес</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="searchGroup">
+           <property name="title">
+            <string>Поиск пути</string>
+           </property>
+           <layout class="QHBoxLayout" name="searchLayout">
+            <item>
+             <widget class="QLabel" name="startLabel">
+              <property name="text">
+               <string>Старт:</string>
+              </property>
+              <property name="styleSheet">
+               <string>color: #8B0045; font-weight: bold;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="startNodeEdit">
+              <property name="text">
+               <string>1</string>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="endLabel">
+              <property name="text">
+               <string>Финиш:</string>
+              </property>
+              <property name="styleSheet">
+               <string>color: #8B0045; font-weight: bold;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="endNodeEdit">
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="findPathBtn">
+              <property name="text">
+               <string>Найти путь</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="resultGroup">
+           <property name="title">
+            <string>Результат</string>
+           </property>
+           <layout class="QVBoxLayout" name="resultLayout">
+            <item>
+             <widget class="QLabel" name="resultLabel">
+              <property name="text">
+               <string>Ожидание поиска...</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignTop</set>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>120</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="viewGroup">
+           <property name="title">
+            <string>Управление</string>
+           </property>
+           <layout class="QHBoxLayout" name="viewLayout">
+            <item>
+             <widget class="QPushButton" name="resetViewBtn">
+              <property name="text">
+               <string>Сброс позиций</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="saveSolutionBtn">
+           <property name="text">
+            <string>Сохранить решение</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="rightPanel">
+       <layout class="QVBoxLayout" name="rightLayout">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QWidget" name="graphContainer" native="true">
+          <layout class="QVBoxLayout" name="graphContainerLayout">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>

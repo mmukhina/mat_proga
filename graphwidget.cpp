@@ -64,7 +64,7 @@ void GraphWidget::paintEvent(QPaintEvent* event)
     if (!currentGraph || currentGraph->getNodeCount() == 0) {
         QPainter painter(this);
         painter.setPen(QColor(255, 105, 180));
-        painter.drawText(rect(), Qt::AlignCenter, "Нет данных для отображения :(\nЗагрузите граф или добавьте ребра.");
+        painter.drawText(rect(), Qt::AlignCenter, "Нет данных для отображения\nЗагрузите граф или добавьте ребра.");
         return;
     }
 

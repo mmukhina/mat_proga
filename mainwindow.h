@@ -2,12 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QTextEdit>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QTableWidget>
-#include <QLabel>
-#include <QSplitter>
 #include "graph.h"
 #include "graphwidget.h"
 
@@ -38,27 +32,11 @@ private:
     QVector<int> lastFoundPath;
     int lastPathCost;
 
-    void setupUI();
     void applyPinkStyle();
     void updateGraphDisplay();
     bool validateInputs();
     QString generateSolutionReport();
     void updateNodeCountLabel();
-
-    QTableWidget* edgesTable;
-    QLineEdit* fromEdit;
-    QLineEdit* toEdit;
-    QLineEdit* weightEdit;
-    QLineEdit* startNodeEdit;
-    QLineEdit* endNodeEdit;
-    QPushButton* addEdgeBtn;
-    QPushButton* clearBtn;
-    QPushButton* loadFileBtn;
-    QPushButton* findPathBtn;
-    QPushButton* saveSolutionBtn;
-    QPushButton* resetViewBtn;
-    QLabel* resultLabel;
-    QLabel* nodeCountLabel;
 };
 
 #endif // MAINWINDOW_H
