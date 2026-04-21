@@ -89,6 +89,76 @@ bool Graph::addEdge(int from, int to, int weight)
     return true;
 }
 
+bool Graph::deleteNode(int nodeId)
+{
+    if (nodeId < 1 || nodeId > nodeCount) {
+        lastError = "Узел не существует";
+        return false;
+    }
+
+    // Удаляем все рёбра, исходящие из узла
+    adjList.remove(nodeId);
+
+    // Удаляем все рёбра, входящие в узел
+    for (auto it = adjList.begin(); it != adjList.end(); ++it) {
+        QVector<QPair<int, int>>& edges = it.value();
+        edges.erase(std::remove_if(edges.begin(), edges.end(),
+                                   [nodeId](const QPair<int, int>& edge) {
+                                       return edge.first == nodeId;
+                                   }), edges.end());
+    }
+
+    // Перенумеровываем узлы для компактности
+    renumberNodes();
+
+    return true;
+}
+
+void Graph::renumberNodes()
+{
+    if (adjList.isEmpty()) {
+        nodeCount = 0;
+        return;
+    }
+
+    // Собираем все существующие узлы
+    QSet<int> existingNodes;
+    for (auto it = adjList.begin(); it != adjList.end(); ++it) {
+        existingNodes.insert(it.key());
+        for (const auto& edge : it.value()) {
+            existingNodes.insert(edge.first);
+        }
+    }
+
+    if (existingNodes.isEmpty()) {
+        nodeCount = 0;
+        adjList.clear();
+        return;
+    }
+
+    // Создаём отображение старых ID на новые
+    QList<int> sortedNodes = existingNodes.values();
+    std::sort(sortedNodes.begin(), sortedNodes.end());
+
+    QMap<int, int> oldToNew;
+    for (int i = 0; i < sortedNodes.size(); ++i) {
+        oldToNew[sortedNodes[i]] = i + 1;
+    }
+
+    // Создаём новый список смежности с новыми ID
+    QMap<int, QVector<QPair<int, int>>> newAdjList;
+    for (auto it = adjList.begin(); it != adjList.end(); ++it) {
+        int newFrom = oldToNew[it.key()];
+        for (const auto& edge : it.value()) {
+            int newTo = oldToNew[edge.first];
+            newAdjList[newFrom].append(qMakePair(newTo, edge.second));
+        }
+    }
+
+    adjList = newAdjList;
+    nodeCount = sortedNodes.size();
+}
+
 void Graph::clear()
 {
     nodeCount = 0;

@@ -24,6 +24,7 @@ private slots:
     void onFindPathClicked();
     void onSaveSolutionClicked();
     void onResetViewClicked();
+    void onDeleteNodeClicked();  // Новый слот
 
 private:
     Ui::MainWindow *ui;
@@ -32,7 +33,6 @@ private:
     QVector<int> lastFoundPath;
     int lastPathCost;
 
-    void applyPinkStyle();
     void updateGraphDisplay();
     bool validateInputs();
     QString generateSolutionReport();

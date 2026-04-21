@@ -53,6 +53,11 @@ public:
     QPushButton *addEdgeBtn;
     QPushButton *clearBtn;
     QLabel *nodeCountLabel;
+    QGroupBox *deleteGroup;
+    QHBoxLayout *deleteLayout;
+    QLabel *deleteNodeLabel;
+    QLineEdit *deleteNodeEdit;
+    QPushButton *deleteNodeBtn;
     QGroupBox *edgesGroup;
     QVBoxLayout *edgesLayout;
     QTableWidget *edgesTable;
@@ -82,26 +87,109 @@ public:
             MainWindow->setObjectName("MainWindow");
         MainWindow->resize(1400, 900);
         MainWindow->setStyleSheet(QString::fromUtf8("\n"
-"    QMainWindow { background-color: #FFF0F5; }\n"
-"    QWidget { background-color: #FFF0F5; }\n"
-"    QScrollArea { background-color: #FFF0F5; border: none; }\n"
-"    QScrollBar:vertical { border: none; background-color: #FFF0F5; width: 10px; border-radius: 5px; }\n"
-"    QScrollBar::handle:vertical { background-color: #FF69B4; border-radius: 5px; min-height: 20px; }\n"
-"    QScrollBar::handle:vertical:hover { background-color: #FF1493; }\n"
-"    QGroupBox { font-weight: bold; border: 2px solid #FF69B4; border-radius: 8px; margin-top: 10px; padding-top: 10px; background-color: #FFF5F8; color: #8B0045; }\n"
-"    QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 5px; color: #FF1493; }\n"
-"    QPushButton { background-color: #FF69B4; border: none; border-radius: 6px; padding: 8px; font-weight: bold; color: white; }\n"
-"    QPushButton:hover { background-color: #FF1493; }\n"
-"    QPushButton:pressed { background-color: #C71585; }\n"
-"    QLineEdit { border: 2px solid #FFB6C1; border-radius:"
-                        " 5px; padding: 5px; background-color: white; color: #8B0045; }\n"
-"    QLineEdit:focus { border-color: #FF69B4; }\n"
-"    QTableWidget { border: 2px solid #FFB6C1; border-radius: 5px; background-color: white; alternate-background-color: #FFF0F5; gridline-color: #FFB6C1; }\n"
-"    QTableWidget::item { padding: 5px; }\n"
-"    QHeaderView::section { background-color: #FF69B4; color: white; padding: 5px; border: none; font-weight: bold; }\n"
-"    QLabel { color: #8B0045; }\n"
-"    QLabel#resultLabel { border: 2px solid #FF69B4; border-radius: 8px; padding: 10px; background-color: #FFF0F5; color: #8B0045; }\n"
-"    QSplitter::handle { background-color: #FFB6C1; }\n"
+"    /* \320\236\321\201\320\275\320\276\320\262\320\275\321\213\320\265 \321\206\320\262\320\265\321\202\320\260 - \320\262\321\201\320\265\320\263\320\264\320\260 \321\200\320\276\320\267\320\276\320\262\320\260\321\217 \321\202\320\265\320\274\320\260 */\n"
+"    QMainWindow, QWidget {\n"
+"        background-color: #FFF0F5;\n"
+"        color: #8B0045;\n"
+"    }\n"
+"    \n"
+"    QScrollArea {\n"
+"        background-color: #FFF0F5;\n"
+"        border: none;\n"
+"    }\n"
+"    \n"
+"    QScrollBar:vertical {\n"
+"        border: none;\n"
+"        background-color: #FFF0F5;\n"
+"        width: 10px;\n"
+"        border-radius: 5px;\n"
+"    }\n"
+"    QScrollBar::handle:vertical {\n"
+"        background-color: #FF69B4;\n"
+"        border-radius: 5px;\n"
+"        min-height: 20px;\n"
+"    }\n"
+"    QScrollBar::handle:vertical:hover {\n"
+"        background-color: #FF1493;\n"
+"    }\n"
+"    \n"
+"    QGroupBox {\n"
+"        font-weight: bold;\n"
+"        border: 2px solid #FF69B4;\n"
+"        border-radius: 8px;\n"
+" "
+                        "       margin-top: 10px;\n"
+"        padding-top: 10px;\n"
+"        background-color: #FFF5F8;\n"
+"        color: #8B0045;\n"
+"    }\n"
+"    QGroupBox::title {\n"
+"        subcontrol-origin: margin;\n"
+"        left: 10px;\n"
+"        padding: 0 5px;\n"
+"        color: #FF1493;\n"
+"    }\n"
+"    \n"
+"    QPushButton {\n"
+"        background-color: #FF69B4;\n"
+"        border: none;\n"
+"        border-radius: 6px;\n"
+"        padding: 8px;\n"
+"        font-weight: bold;\n"
+"        color: white;\n"
+"    }\n"
+"    QPushButton:hover {\n"
+"        background-color: #FF1493;\n"
+"    }\n"
+"    QPushButton:pressed {\n"
+"        background-color: #C71585;\n"
+"    }\n"
+"    \n"
+"    QLineEdit {\n"
+"        border: 2px solid #FFB6C1;\n"
+"        border-radius: 5px;\n"
+"        padding: 5px;\n"
+"        background-color: white;\n"
+"        color: #8B0045;\n"
+"    }\n"
+"    QLineEdit:focus {\n"
+"        border-color: #FF69B4;\n"
+"    }\n"
+"    \n"
+"    QTableWidget {\n"
+"        border: 2px solid #FFB6C1;\n"
+"        bord"
+                        "er-radius: 5px;\n"
+"        background-color: white;\n"
+"        alternate-background-color: #FFF0F5;\n"
+"        gridline-color: #FFB6C1;\n"
+"    }\n"
+"    QTableWidget::item {\n"
+"        padding: 5px;\n"
+"        color: #8B0045;\n"
+"    }\n"
+"    QHeaderView::section {\n"
+"        background-color: #FF69B4;\n"
+"        color: white;\n"
+"        padding: 5px;\n"
+"        border: none;\n"
+"        font-weight: bold;\n"
+"    }\n"
+"    \n"
+"    QLabel {\n"
+"        color: #8B0045;\n"
+"    }\n"
+"    QLabel#resultLabel {\n"
+"        border: 2px solid #FF69B4;\n"
+"        border-radius: 8px;\n"
+"        padding: 10px;\n"
+"        background-color: #FFF0F5;\n"
+"        color: #8B0045;\n"
+"    }\n"
+"    \n"
+"    QSplitter::handle {\n"
+"        background-color: #FFB6C1;\n"
+"    }\n"
 "   "));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
@@ -194,6 +282,28 @@ public:
 
 
         leftLayout->addWidget(inputGroup);
+
+        deleteGroup = new QGroupBox(leftPanel);
+        deleteGroup->setObjectName("deleteGroup");
+        deleteLayout = new QHBoxLayout(deleteGroup);
+        deleteLayout->setObjectName("deleteLayout");
+        deleteNodeLabel = new QLabel(deleteGroup);
+        deleteNodeLabel->setObjectName("deleteNodeLabel");
+
+        deleteLayout->addWidget(deleteNodeLabel);
+
+        deleteNodeEdit = new QLineEdit(deleteGroup);
+        deleteNodeEdit->setObjectName("deleteNodeEdit");
+
+        deleteLayout->addWidget(deleteNodeEdit);
+
+        deleteNodeBtn = new QPushButton(deleteGroup);
+        deleteNodeBtn->setObjectName("deleteNodeBtn");
+
+        deleteLayout->addWidget(deleteNodeBtn);
+
+
+        leftLayout->addWidget(deleteGroup);
 
         edgesGroup = new QGroupBox(leftPanel);
         edgesGroup->setObjectName("edgesGroup");
@@ -335,6 +445,12 @@ public:
         clearBtn->setText(QCoreApplication::translate("MainWindow", "\320\236\321\207\320\270\321\201\321\202\320\270\321\202\321\214 \320\263\321\200\320\260\321\204", nullptr));
         nodeCountLabel->setText(QCoreApplication::translate("MainWindow", "\320\243\320\267\320\273\320\276\320\262: 0", nullptr));
         nodeCountLabel->setStyleSheet(QCoreApplication::translate("MainWindow", "color: #FF1493; font-weight: bold; font-size: 12px;", nullptr));
+        deleteGroup->setTitle(QCoreApplication::translate("MainWindow", "\320\243\320\264\320\260\320\273\320\265\320\275\320\270\320\265 \321\203\320\267\320\273\320\260", nullptr));
+        deleteNodeLabel->setText(QCoreApplication::translate("MainWindow", "\320\235\320\276\320\274\320\265\321\200 \321\203\320\267\320\273\320\260:", nullptr));
+        deleteNodeLabel->setStyleSheet(QCoreApplication::translate("MainWindow", "color: #8B0045; font-weight: bold;", nullptr));
+        deleteNodeEdit->setPlaceholderText(QCoreApplication::translate("MainWindow", "\320\222\320\262\320\265\320\264\320\270\321\202\320\265 \320\275\320\276\320\274\320\265\321\200", nullptr));
+        deleteNodeBtn->setText(QCoreApplication::translate("MainWindow", "\320\243\320\264\320\260\320\273\320\270\321\202\321\214 \321\203\320\267\320\265\320\273", nullptr));
+        deleteNodeBtn->setStyleSheet(QCoreApplication::translate("MainWindow", "background-color: #DC143C;", nullptr));
         edgesGroup->setTitle(QCoreApplication::translate("MainWindow", "\320\241\320\277\320\270\321\201\320\276\320\272 \321\200\320\265\320\261\320\265\321\200", nullptr));
         QTableWidgetItem *___qtablewidgetitem = edgesTable->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QCoreApplication::translate("MainWindow", "\320\236\321\202", nullptr));

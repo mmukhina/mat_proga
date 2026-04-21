@@ -14,9 +14,11 @@ GraphWidget::GraphWidget(QWidget *parent)
     setMouseTracking(true);
     setAutoFillBackground(true);
 
+    // Фиксированный цвет фона
     QPalette pal = palette();
-    pal.setColor(QPalette::Window, QColor(255, 240, 245));
+    pal.setColor(QPalette::Window, QColor(255, 240, 245)); // #FFF0F5
     setPalette(pal);
+    setBackgroundRole(QPalette::Window);
 }
 
 void GraphWidget::setGraph(const Graph* graph)
@@ -63,7 +65,7 @@ void GraphWidget::paintEvent(QPaintEvent* event)
 
     if (!currentGraph || currentGraph->getNodeCount() == 0) {
         QPainter painter(this);
-        painter.setPen(QColor(255, 105, 180));
+        painter.setPen(QColor(139, 0, 69)); // #8B0045
         painter.drawText(rect(), Qt::AlignCenter, "Нет данных для отображения\nЗагрузите граф или добавьте ребра.");
         return;
     }
@@ -185,21 +187,22 @@ void GraphWidget::drawNode(QPainter* painter, int nodeId, const QPointF& pos)
 
     QRadialGradient gradient(pos, 30);
     if (nodeId == 1 || nodeId == currentGraph->getNodeCount()) {
-        gradient.setColorAt(0, QColor(255, 105, 180));
-        gradient.setColorAt(1, QColor(255, 20, 147));
+        gradient.setColorAt(0, QColor(255, 105, 180)); // #FF69B4
+        gradient.setColorAt(1, QColor(255, 20, 147)); // #FF1493
     } else if (isInPath) {
-        gradient.setColorAt(0, QColor(255, 182, 193));
-        gradient.setColorAt(1, QColor(255, 105, 180));
+        gradient.setColorAt(0, QColor(255, 182, 193)); // #FFB6C1
+        gradient.setColorAt(1, QColor(255, 105, 180)); // #FF69B4
     } else {
-        gradient.setColorAt(0, QColor(255, 218, 225));
-        gradient.setColorAt(1, QColor(255, 182, 193));
+        gradient.setColorAt(0, QColor(255, 218, 225)); // #FFDAE1
+        gradient.setColorAt(1, QColor(255, 182, 193)); // #FFB6C1
     }
 
     painter->setBrush(gradient);
-    painter->setPen(QPen(QColor(255, 20, 147), 2));
+    painter->setPen(QPen(QColor(255, 20, 147), 2)); // #FF1493
     painter->drawEllipse(pos, 30, 30);
 
-    painter->setPen(QPen(QColor(139, 0, 69), 1));
+    // Чёрный цвет для цифр (всегда читаемый)
+    painter->setPen(QPen(Qt::black, 1));
     painter->setFont(QFont("Arial", 14, QFont::Bold));
     painter->drawText(QRectF(pos.x() - 25, pos.y() - 25, 50, 50),
                       Qt::AlignCenter, QString::number(nodeId));
@@ -216,10 +219,10 @@ void GraphWidget::drawEdge(QPainter* painter, int from, int to, int weight, bool
 
     QPen pen;
     if (isHighlighted) {
-        pen.setColor(QColor(255, 20, 147));
+        pen.setColor(QColor(255, 20, 147)); // #FF1493
         pen.setWidth(5);
     } else {
-        pen.setColor(QColor(219, 112, 147));
+        pen.setColor(QColor(219, 112, 147)); // #DB7093
         pen.setWidth(3);
     }
     painter->setPen(pen);
@@ -236,7 +239,9 @@ void GraphWidget::drawEdge(QPainter* painter, int from, int to, int weight, bool
 
     painter->setPen(QPen(isHighlighted ? QColor(255, 20, 147) : QColor(139, 0, 69), 2));
     painter->setFont(QFont("Arial", 12, QFont::Bold));
-    painter->setBrush(QBrush(QColor(255, 240, 245)));
+
+    // Белый фон для текста веса
+    painter->setBrush(QBrush(QColor(255, 240, 245))); // #FFF0F5
 
     QRectF textRect(midPoint.x() + normal.x() - 20,
                     midPoint.y() + normal.y() - 14,

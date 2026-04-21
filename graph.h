@@ -14,6 +14,7 @@ public:
 
     bool loadFromFile(const QString& filename);
     bool addEdge(int from, int to, int weight);
+    bool deleteNode(int nodeId);  // Новый метод
     void clear();
 
     // Метод динамического программирования для поиска кратчайшего пути
@@ -40,6 +41,7 @@ private:
 
     bool validateGraph();
     void findReachableNodes(int start, QVector<bool>& visited) const;
+    void renumberNodes();  // Новый метод для перенумерации узлов
 };
 
 #endif // GRAPH_H

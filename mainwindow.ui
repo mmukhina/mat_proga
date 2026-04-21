@@ -15,25 +15,107 @@
   </property>
   <property name="styleSheet">
    <string notr="true">
-    QMainWindow { background-color: #FFF0F5; }
-    QWidget { background-color: #FFF0F5; }
-    QScrollArea { background-color: #FFF0F5; border: none; }
-    QScrollBar:vertical { border: none; background-color: #FFF0F5; width: 10px; border-radius: 5px; }
-    QScrollBar::handle:vertical { background-color: #FF69B4; border-radius: 5px; min-height: 20px; }
-    QScrollBar::handle:vertical:hover { background-color: #FF1493; }
-    QGroupBox { font-weight: bold; border: 2px solid #FF69B4; border-radius: 8px; margin-top: 10px; padding-top: 10px; background-color: #FFF5F8; color: #8B0045; }
-    QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 5px; color: #FF1493; }
-    QPushButton { background-color: #FF69B4; border: none; border-radius: 6px; padding: 8px; font-weight: bold; color: white; }
-    QPushButton:hover { background-color: #FF1493; }
-    QPushButton:pressed { background-color: #C71585; }
-    QLineEdit { border: 2px solid #FFB6C1; border-radius: 5px; padding: 5px; background-color: white; color: #8B0045; }
-    QLineEdit:focus { border-color: #FF69B4; }
-    QTableWidget { border: 2px solid #FFB6C1; border-radius: 5px; background-color: white; alternate-background-color: #FFF0F5; gridline-color: #FFB6C1; }
-    QTableWidget::item { padding: 5px; }
-    QHeaderView::section { background-color: #FF69B4; color: white; padding: 5px; border: none; font-weight: bold; }
-    QLabel { color: #8B0045; }
-    QLabel#resultLabel { border: 2px solid #FF69B4; border-radius: 8px; padding: 10px; background-color: #FFF0F5; color: #8B0045; }
-    QSplitter::handle { background-color: #FFB6C1; }
+    /* Основные цвета - всегда розовая тема */
+    QMainWindow, QWidget {
+        background-color: #FFF0F5;
+        color: #8B0045;
+    }
+    
+    QScrollArea {
+        background-color: #FFF0F5;
+        border: none;
+    }
+    
+    QScrollBar:vertical {
+        border: none;
+        background-color: #FFF0F5;
+        width: 10px;
+        border-radius: 5px;
+    }
+    QScrollBar::handle:vertical {
+        background-color: #FF69B4;
+        border-radius: 5px;
+        min-height: 20px;
+    }
+    QScrollBar::handle:vertical:hover {
+        background-color: #FF1493;
+    }
+    
+    QGroupBox {
+        font-weight: bold;
+        border: 2px solid #FF69B4;
+        border-radius: 8px;
+        margin-top: 10px;
+        padding-top: 10px;
+        background-color: #FFF5F8;
+        color: #8B0045;
+    }
+    QGroupBox::title {
+        subcontrol-origin: margin;
+        left: 10px;
+        padding: 0 5px;
+        color: #FF1493;
+    }
+    
+    QPushButton {
+        background-color: #FF69B4;
+        border: none;
+        border-radius: 6px;
+        padding: 8px;
+        font-weight: bold;
+        color: white;
+    }
+    QPushButton:hover {
+        background-color: #FF1493;
+    }
+    QPushButton:pressed {
+        background-color: #C71585;
+    }
+    
+    QLineEdit {
+        border: 2px solid #FFB6C1;
+        border-radius: 5px;
+        padding: 5px;
+        background-color: white;
+        color: #8B0045;
+    }
+    QLineEdit:focus {
+        border-color: #FF69B4;
+    }
+    
+    QTableWidget {
+        border: 2px solid #FFB6C1;
+        border-radius: 5px;
+        background-color: white;
+        alternate-background-color: #FFF0F5;
+        gridline-color: #FFB6C1;
+    }
+    QTableWidget::item {
+        padding: 5px;
+        color: #8B0045;
+    }
+    QHeaderView::section {
+        background-color: #FF69B4;
+        color: white;
+        padding: 5px;
+        border: none;
+        font-weight: bold;
+    }
+    
+    QLabel {
+        color: #8B0045;
+    }
+    QLabel#resultLabel {
+        border: 2px solid #FF69B4;
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #FFF0F5;
+        color: #8B0045;
+    }
+    
+    QSplitter::handle {
+        background-color: #FFB6C1;
+    }
    </string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -175,6 +257,42 @@
               </property>
               <property name="styleSheet">
                <string>color: #FF1493; font-weight: bold; font-size: 12px;</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="deleteGroup">
+           <property name="title">
+            <string>Удаление узла</string>
+           </property>
+           <layout class="QHBoxLayout" name="deleteLayout">
+            <item>
+             <widget class="QLabel" name="deleteNodeLabel">
+              <property name="text">
+               <string>Номер узла:</string>
+              </property>
+              <property name="styleSheet">
+               <string>color: #8B0045; font-weight: bold;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="deleteNodeEdit">
+              <property name="placeholderText">
+               <string>Введите номер</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="deleteNodeBtn">
+              <property name="text">
+               <string>Удалить узел</string>
+              </property>
+              <property name="styleSheet">
+               <string>background-color: #DC143C;</string>
               </property>
              </widget>
             </item>

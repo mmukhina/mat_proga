@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->findPathBtn, &QPushButton::clicked, this, &MainWindow::onFindPathClicked);
     connect(ui->saveSolutionBtn, &QPushButton::clicked, this, &MainWindow::onSaveSolutionClicked);
     connect(ui->resetViewBtn, &QPushButton::clicked, this, &MainWindow::onResetViewClicked);
+    connect(ui->deleteNodeBtn, &QPushButton::clicked, this, &MainWindow::onDeleteNodeClicked);
 
     // Настройка таблицы
     ui->edgesTable->setColumnCount(3);
@@ -187,6 +188,52 @@ void MainWindow::onResetViewClicked()
     graphWidget->resetNodePositions();
     if (!lastFoundPath.isEmpty()) {
         graphWidget->setHighlightedPath(lastFoundPath);
+    }
+}
+
+void MainWindow::onDeleteNodeClicked()
+{
+    bool ok;
+    int nodeToDelete = ui->deleteNodeEdit->text().toInt(&ok);
+
+    if (!ok || nodeToDelete <= 0) {
+        QMessageBox::warning(this, "Ошибка", "Введите корректный номер узла для удаления");
+        return;
+    }
+
+    if (graph.getNodeCount() == 0) {
+        QMessageBox::warning(this, "Ошибка", "Граф пуст");
+        return;
+    }
+
+    if (nodeToDelete > graph.getNodeCount()) {
+        QMessageBox::warning(this, "Ошибка",
+                             QString("Узел %1 не существует. Максимальный узел: %2")
+                                 .arg(nodeToDelete).arg(graph.getNodeCount()));
+        return;
+    }
+
+    // Проверка, не удаляем ли мы узел, который используется в найденном пути
+    if (!lastFoundPath.isEmpty() && lastFoundPath.contains(nodeToDelete)) {
+        lastFoundPath.clear();
+        lastPathCost = -1;
+        ui->resultLabel->setText("Ожидание поиска...");
+        graphWidget->clearHighlightedPath();
+    }
+
+    if (graph.deleteNode(nodeToDelete)) {
+        updateGraphDisplay();
+        graphWidget->setGraph(&graph);
+        graphWidget->clearHighlightedPath();
+        updateNodeCountLabel();
+
+        // Очищаем поле ввода
+        ui->deleteNodeEdit->clear();
+
+        QMessageBox::information(this, "Успех",
+                                 QString("Узел %1 и все связанные с ним рёбра удалены").arg(nodeToDelete));
+    } else {
+        QMessageBox::warning(this, "Ошибка", "Не удалось удалить узел");
     }
 }
 
