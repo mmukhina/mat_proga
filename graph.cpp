@@ -4,6 +4,52 @@
 #include <QTextStream>
 #include <QRegularExpression>
 #include <QStack>
+#include <QSet>
+#include <algorithm>
+#include <climits>
+#include <functional>
+
+namespace {
+QString removeComment(const QString& line)
+{
+    int commentPos = line.indexOf('#');
+    const int slashCommentPos = line.indexOf("//");
+    if (slashCommentPos >= 0 && (commentPos < 0 || slashCommentPos < commentPos)) {
+        commentPos = slashCommentPos;
+    }
+
+    return commentPos >= 0 ? line.left(commentPos).trimmed() : line.trimmed();
+}
+
+bool parseIntegerRow(const QString& line, QVector<int>& values)
+{
+    values.clear();
+    const QStringList parts = line.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
+
+    for (const QString& part : parts) {
+        bool ok = false;
+        int value = part.toInt(&ok);
+        if (!ok) {
+            return false;
+        }
+        values.append(value);
+    }
+
+    return !values.isEmpty();
+}
+
+struct FileRow {
+    int lineNumber;
+    QVector<int> values;
+};
+
+struct FileEdge {
+    int lineNumber;
+    int from;
+    int to;
+    int weight;
+};
+}
 
 Graph::Graph() : nodeCount(0) {}
 
@@ -18,62 +64,92 @@ bool Graph::loadFromFile(const QString& filename)
     }
 
     QTextStream in(&file);
-    QString line;
+    QVector<FileRow> rows;
     int lineNum = 0;
-    QSet<int> nodes;
 
-    // Читаем количество узлов
-    if (!in.atEnd()) {
-        line = in.readLine().trimmed();
-        bool ok;
-        nodeCount = line.toInt(&ok);
-        if (!ok || nodeCount <= 0) {
-            lastError = "Некорректное количество узлов";
-            return false;
-        }
-        lineNum++;
-    } else {
-        lastError = "Пустой файл";
-        return false;
-    }
-
-    // Читаем ребра
     while (!in.atEnd()) {
-        line = in.readLine().trimmed();
-        lineNum++;
+        ++lineNum;
+        const QString line = removeComment(in.readLine());
+        if (line.isEmpty()) {
+            continue;
+        }
 
-        if (line.isEmpty()) continue;
-
-        // Парсим строку: from to weight
-        QStringList parts = line.split(QRegularExpression("\\s+"));
-        if (parts.size() < 3) {
-            lastError = QString("Ошибка в строке %1: недостаточно данных").arg(lineNum);
+        QVector<int> values;
+        if (!parseIntegerRow(line, values)) {
+            lastError = QString("Ошибка в строке %1: ожидались целые числа").arg(lineNum);
             return false;
         }
 
-        bool ok1, ok2, ok3;
-        int from = parts[0].toInt(&ok1);
-        int to = parts[1].toInt(&ok2);
-        int weight = parts[2].toInt(&ok3);
-
-        if (!ok1 || !ok2 || !ok3) {
-            lastError = QString("Ошибка в строке %1: некорректные числа").arg(lineNum);
-            return false;
-        }
-
-        if (from < 1 || from > nodeCount || to < 1 || to > nodeCount) {
-            lastError = QString("Ошибка в строке %1: узел вне диапазона").arg(lineNum);
-            return false;
-        }
-
-        addEdge(from, to, weight);
-        nodes.insert(from);
-        nodes.insert(to);
+        rows.append({lineNum, values});
     }
 
     file.close();
 
+    if (rows.isEmpty()) {
+        lastError = "Пустой файл";
+        return false;
+    }
+
+    QVector<FileEdge> parsedEdges;
+    QSet<QString> usedEdges;
+    int maxNode = 0;
+
+    for (int i = 0; i < rows.size(); ++i) {
+        const FileRow& row = rows[i];
+        if (row.values.size() != 3) {
+            lastError = QString("Ошибка в строке %1: ребро задается тремя числами: от до вес")
+                            .arg(row.lineNumber);
+            return false;
+        }
+
+        const int from = row.values[0];
+        const int to = row.values[1];
+        const int weight = row.values[2];
+
+        if (from <= 0 || to <= 0) {
+            lastError = QString("Ошибка в строке %1: номера узлов должны быть положительными")
+                            .arg(row.lineNumber);
+            return false;
+        }
+
+        if (from == to) {
+            lastError = QString("Ошибка в строке %1: петли не допускаются").arg(row.lineNumber);
+            return false;
+        }
+
+        if (weight <= 0) {
+            lastError = QString("Ошибка в строке %1: вес ребра должен быть положительным")
+                            .arg(row.lineNumber);
+            return false;
+        }
+
+        const QString edgeKey = QString("%1:%2").arg(from).arg(to);
+        if (usedEdges.contains(edgeKey)) {
+            lastError = QString("Ошибка в строке %1: ребро %2 -> %3 уже задано")
+                            .arg(row.lineNumber)
+                            .arg(from)
+                            .arg(to);
+            return false;
+        }
+
+        usedEdges.insert(edgeKey);
+        maxNode = qMax(maxNode, qMax(from, to));
+        parsedEdges.append({row.lineNumber, from, to, weight});
+    }
+
+    if (parsedEdges.isEmpty()) {
+        lastError = "В файле не найдено ни одного ребра. Формат каждой строки: от до вес.";
+        return false;
+    }
+
+    nodeCount = maxNode;
+
+    for (const FileEdge& edge : parsedEdges) {
+        adjList[edge.from].append(qMakePair(edge.to, edge.weight));
+    }
+
     if (!validateGraph()) {
+        clear();
         return false;
     }
 
@@ -82,7 +158,13 @@ bool Graph::loadFromFile(const QString& filename)
 
 bool Graph::addEdge(int from, int to, int weight)
 {
-    if (from < 1 || to < 1) return false;
+    if (from < 1 || to < 1 || from == to || weight <= 0) return false;
+
+    for (const auto& edge : adjList.value(from)) {
+        if (edge.first == to) {
+            return false;
+        }
+    }
 
     adjList[from].append(qMakePair(to, weight));
     nodeCount = qMax(nodeCount, qMax(from, to));
